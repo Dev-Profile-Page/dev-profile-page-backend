@@ -6,3 +6,106 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Card {
+  id         Int        @id @default(autoincrement())
+  platformId Int        @default(autoincrement()) @map("platform_id")
+  isActive   Boolean?   @map("is_active")
+  platform   Platform   @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userCard   UserCard[]
+
+  @@map("card")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Page {
+  id                       Int      @id @default(autoincrement())
+  userId                   Int      @default(autoincrement()) @map("user_id")
+  inspiredBy               Int      @default(autoincrement()) @map("inspired_by")
+  views                    Decimal? @default(0) @db.Decimal
+  likes                    Decimal? @default(0) @db.Decimal
+  userPageInspiredByTouser User     @relation("pageInspiredByToUser", fields: [inspiredBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userPageUserIdTouser     User     @relation("pageUserIdToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("page")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Platform {
+  id             Int             @id @default(autoincrement())
+  name           String[]        @db.VarChar(255)
+  icon           String?
+  isActive       Boolean?        @default(true) @map("is_active")
+  homepageUrl    String?         @map("homepage_url")
+  card           Card[]
+  socialAccount SocialAccount[]
+
+  @@map("platform")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model SocialAccount {
+  id                Int      @id @default(autoincrement())
+  userId            Int      @default(autoincrement()) @map("user_id")
+  platformId        Int      @default(autoincrement()) @map("platform_id")
+  platformAccountId String[] @map("platform_account_id") @db.VarChar(255)
+  isActive         Boolean? @map("is_active")
+  platform          Platform @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user              User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("social_account")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model Technology {
+  id              Int              @id @default(autoincrement())
+  name            String[]         @db.VarChar(255)
+  icon            String?
+  userTechnology UserTechnology[]
+
+  @@map("technology")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model User {
+  id                       Int              @id @default(autoincrement())
+  createdAt                DateTime         @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime?        @map("updated_at") @db.Timestamptz(6)
+  isActive                 Boolean?         @default(true) @map("is_active")
+  name                     String[]         @db.VarChar(255)
+  picture                  String?
+  bio                      String?
+  city                     String[]         @db.VarChar(255)
+  website                  String?
+  pagePageInspiredByToUser Page[]           @relation("pageInspiredByToUser")
+  pagePageUserIdToUser     Page[]           @relation("pageUserIdToUser")
+  socialAccount            SocialAccount[]
+  userCard                 UserCard[]
+  userTechnology           UserTechnology[]
+
+  @@map("user")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model UserCard {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @default(autoincrement()) @map("user_id")
+  cardId   Int      @default(autoincrement()) @map("card_id")
+  isActive Boolean? @default(true) @map("is_active")
+  card     Card     @relation(fields: [cardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user     User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("user_card")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model UserTechnology {
+  id           Int        @id @default(autoincrement())
+  userId       Int        @default(autoincrement()) @map("user_id")
+  technologyId Int        @default(autoincrement()) @map("technology_id")
+  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user         User       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("user_technology")
+}
