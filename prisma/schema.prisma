@@ -11,7 +11,7 @@ datasource db {
 model Card {
   id         Int        @id @default(autoincrement())
   platformId Int        @default(autoincrement()) @map("platform_id")
-  isActive   Boolean?   @map("is_active")
+  isActive   Boolean?   @default(true) @map("is_active")
   platform   Platform   @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userCard   UserCard[]
 
@@ -33,12 +33,12 @@ model Page {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Platform {
-  id             Int             @id @default(autoincrement())
-  name           String[]        @db.VarChar(255)
-  icon           String?
-  isActive       Boolean?        @default(true) @map("is_active")
-  homepageUrl    String?         @map("homepage_url")
-  card           Card[]
+  id            Int             @id @default(autoincrement())
+  icon          String?
+  isActive      Boolean?        @default(true) @map("is_active")
+  homepageUrl   String?         @map("homepage_url")
+  name          String          @db.VarChar(255)
+  card          Card[]
   socialAccount SocialAccount[]
 
   @@map("platform")
@@ -49,8 +49,9 @@ model SocialAccount {
   id                Int      @id @default(autoincrement())
   userId            Int      @default(autoincrement()) @map("user_id")
   platformId        Int      @default(autoincrement()) @map("platform_id")
-  platformAccountId String[] @map("platform_account_id") @db.VarChar(255)
-  isActive         Boolean? @map("is_active")
+  isActive          Boolean? @default(true) @map("is_active")
+  data              Json?    @db.Json
+  platformAccountId String   @map("platform_account_id") @db.VarChar(255)
   platform          Platform @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user              User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -59,9 +60,9 @@ model SocialAccount {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Technology {
-  id              Int              @id @default(autoincrement())
-  name            String[]         @db.VarChar(255)
-  icon            String?
+  id             Int              @id @default(autoincrement())
+  icon           String?
+  name           String           @db.VarChar(255)
   userTechnology UserTechnology[]
 
   @@map("technology")
@@ -70,14 +71,14 @@ model Technology {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model User {
   id                       Int              @id @default(autoincrement())
-  createdAt                DateTime         @map("created_at") @db.Timestamptz(6)
-  updatedAt                DateTime?        @map("updated_at") @db.Timestamptz(6)
+  createdAt                DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
   isActive                 Boolean?         @default(true) @map("is_active")
-  name                     String[]         @db.VarChar(255)
   picture                  String?
   bio                      String?
-  city                     String[]         @db.VarChar(255)
   website                  String?
+  name                     String?          @db.VarChar(255)
+  city                     String?          @db.VarChar(255)
   pagePageInspiredByToUser Page[]           @relation("pageInspiredByToUser")
   pagePageUserIdToUser     Page[]           @relation("pageUserIdToUser")
   socialAccount            SocialAccount[]
