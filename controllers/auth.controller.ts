@@ -4,7 +4,7 @@ import StackOverflowService from '../services/platforms/stackoverflow/stackoverf
 import { StackOverflowAccessTokenData } from '../services/platforms/stackoverflow/stackoverflow.types';
 import { Platform } from '../types/global.types';
 import { prisma } from '../db/prisma_client';
-import { ACCESS_TOKEN_PRIVATE_KEY } from '../global';
+import { ACCESS_TOKEN_PRIVATE_KEY, CONTROL_PANEL_URL } from '../global';
 
 type StackOverflowOAuthCallbackQueryType = {
   code: string,
@@ -18,8 +18,8 @@ export async function handleStackOverflowCallback(req: Request<{}, {}, {}, Stack
   if(accessTokenData !== false) {
     const accessToken = await authService.signUpOrLogin(Platform.STACKOVERFLOW, accessTokenData.accessToken);
 
-    return res.redirect(`http://localhost:5173?accessToken=${accessToken}`);
+    return res.redirect(`${CONTROL_PANEL_URL}?accessToken=${accessToken}`);
   }
 
-  return res.redirect('http://localhost:5173/unauthorized');
+  return res.redirect(`${CONTROL_PANEL_URL}/unauthorized`);
 }

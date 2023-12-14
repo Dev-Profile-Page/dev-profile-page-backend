@@ -7,6 +7,7 @@ declare global {
       STACKOVERFLOW_CLIENT_SECRET: string;
       STACKOVERFLOW_CLIENT_REDIRECT_URI: string;
       ACCESS_TOKEN_PRIVATE_KEY: string;
+      CONTROL_PANEL_URL: string;
     }
   }
 }
