@@ -1,11 +1,13 @@
 import { PrismaClient, User } from "@prisma/client";
 
-import { Platform } from "../../types/global.types";
 import { AccessTokenData, PlatformUserData } from "./auth.types";
-import StackOverflowService from "../platforms/stackoverflow/stackoverflow";
+import { Platform } from "../../types/global.types";
 import { StackOverflowAccessTokenData, StackOverflowUser } from "../platforms/stackoverflow/stackoverflow.types";
-import { removeEscapeCharacters, stripHTML } from "../../utils/string.utils";
+
+import StackOverflowService from "../platforms/stackoverflow/stackoverflow";
+
 import { CryptoUtils } from "../../utils/crypto.utils";
+import { removeEscapeCharacters, stripHTML } from "../../utils/string.utils";
 
 export default class AuthService {
 

@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
-import AuthService from '../services/auth/auth.service';
-import StackOverflowService from '../services/platforms/stackoverflow/stackoverflow';
-import { StackOverflowAccessTokenData } from '../services/platforms/stackoverflow/stackoverflow.types';
-import { Platform } from '../types/global.types';
+
 import { prisma } from '../db/prisma_client';
+
 import { ACCESS_TOKEN_PRIVATE_KEY, CONTROL_PANEL_URL } from '../global';
+
+import { Platform } from '../types/global.types';
+import { StackOverflowAccessTokenData } from '../services/platforms/stackoverflow/stackoverflow.types';
+
+import AuthService from '../services/auth/auth.service';
 
 type StackOverflowOAuthCallbackQueryType = {
   code: string,

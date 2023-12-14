@@ -1,6 +1,8 @@
 import { URLSearchParams } from "url"
+
 import { STACKEXCHANE_SITE, STACKEXCHANGE_ROOT_URL, STACKEXCHANGE_SITE_KEY, STACKEXCHANGE_USER_FILTER, STACKOVERFLOW_CLIENT_ID, STACKOVERFLOW_CLIENT_REDIRECT_URI, STACKOVERFLOW_CLIENT_SECRET } from "../../../global"
-import { StackOverflowAccessTokenData, StackOverflowAccessTokenResponse, StackOverflowUserDataResponse, TotalResponse } from "./stackoverflow.types";
+
+import { StackOverflowAccessTokenData, StackOverflowAccessTokenResponse, StackOverflowUserDataResponse } from "./stackoverflow.types";
 
 export default class StackOverflowService {
   private accessToken: string = '';
