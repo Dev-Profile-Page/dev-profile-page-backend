@@ -3,6 +3,8 @@ import compression from 'compression';
 
 import authRouter from './routers/auth.routes';
 
+import './db/prisma_client';
+
 const app: Express = express();
 const port = process.env.PORT;
 
