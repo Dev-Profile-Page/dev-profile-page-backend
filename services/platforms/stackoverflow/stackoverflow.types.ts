@@ -32,10 +32,6 @@ export interface BadgeCounts {
   gold: number
 }
 
-export interface TotalResponse {
-  total: number;
-}
-
 export interface StackOverflowUser {
   badges: number;
   views: number;
