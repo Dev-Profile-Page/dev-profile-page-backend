@@ -21,7 +21,7 @@ export async function handleStackOverflowCallback(req: Request<{}, {}, {}, Stack
   if(accessTokenData !== false) {
     const accessToken = await authService.signUpOrLogin(Platform.STACKOVERFLOW, accessTokenData.accessToken);
 
-    return res.redirect(`${CONTROL_PANEL_URL}?accessToken=${accessToken}`);
+    return res.redirect(`${CONTROL_PANEL_URL}/auth-callback?accessToken=${accessToken}`);
   }
 
   return res.redirect(`${CONTROL_PANEL_URL}/unauthorized`);
