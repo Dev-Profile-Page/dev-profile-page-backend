@@ -59,6 +59,13 @@ export class Response {
     };
   }
 
+  public toUnauthorizedResponse(): FailureResponseWithoutError {
+    return {
+      status: 403,
+      responseCode: ResponseCode.UNAUTHORIZED,
+    };
+  }
+
   public toServerIssueResponse(): FailureResponseWithoutError {
     return {
       status: 500,
