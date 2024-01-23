@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import type { PrismaClient, User } from "@prisma/client";
 
 import { AccessTokenData, PlatformUserData } from "./auth.types";
 import { Platform } from "../../types/global.types";
