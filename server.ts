@@ -4,7 +4,7 @@ import compression from 'compression';
 import authRouter from './routers/auth.routes';
 import cardsRouter from './routers/cards.routes';
 
-import './db/prisma_client';
+import { authNZ } from './middelwares/authnz.middleware';
 
 const app: Express = express();
 const port = process.env.PORT;
@@ -17,7 +17,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/oauth/callback', authRouter);
 
-app.use('/cards', cardsRouter);
+app.use('/cards', authNZ(['user']), cardsRouter);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port} 🔥`);
