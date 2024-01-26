@@ -3,6 +3,7 @@ import compression from 'compression';
 
 import authRouter from './routers/auth.routes';
 import cardsRouter from './routers/cards.routes';
+import technologyRouter from './routers/technology.routes';
 
 import { authNZ } from './middelwares/authnz.middleware';
 
@@ -18,7 +19,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/oauth/callback', authRouter);
 
 app.use('/cards', authNZ(['user']), cardsRouter);
+app.use('/technologies', authNZ(['user']), technologyRouter);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port} 🔥`);
-});
+}); 
