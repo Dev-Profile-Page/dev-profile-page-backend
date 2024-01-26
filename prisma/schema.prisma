@@ -13,33 +13,41 @@ model Card {
   platformId Int        @default(autoincrement()) @map("platform_id")
   isActive   Boolean?   @default(true) @map("is_active")
   platform   Platform   @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userCard   UserCard[]
+  page_card  PageCard[]
 
   @@map("card")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Page {
-  id                       Int      @id @default(autoincrement())
-  userId                   Int      @default(autoincrement()) @map("user_id")
-  inspiredBy               Int      @default(autoincrement()) @map("inspired_by")
-  views                    Decimal? @default(0) @db.Decimal
-  likes                    Decimal? @default(0) @db.Decimal
-  userPageInspiredByTouser User     @relation("pageInspiredByToUser", fields: [inspiredBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userPageUserIdTouser     User     @relation("pageUserIdToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                       Int              @id @default(autoincrement())
+  userId                   Int              @default(autoincrement()) @map("user_id")
+  inspiredBy               Int              @default(autoincrement()) @map("inspired_by")
+  views                    Decimal?         @default(0) @db.Decimal
+  likes                    Decimal?         @default(0) @db.Decimal
+  name                     String?          @db.VarChar(255)
+  picture                  String?
+  bio                      String?
+  website                  String?          @db.VarChar(255)
+  city                     String?          @db.VarChar(255)
+  userPageInspiredByTouser User             @relation("pageInspiredByToUser", fields: [inspiredBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userPageUserIdTouser     User             @relation("pageUserIdToUser", fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  page_card                PageCard[]
+  page_technology          PageTechnology[]
 
   @@map("page")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Platform {
-  id            Int             @id @default(autoincrement())
-  icon          String?
-  isActive      Boolean?        @default(true) @map("is_active")
-  homepageUrl   String?         @map("homepage_url")
-  name          String          @db.VarChar(255)
-  card          Card[]
-  socialAccount SocialAccount[]
+  id             Int              @id @default(autoincrement())
+  icon           String?
+  isActive       Boolean?         @default(true) @map("is_active")
+  homepageUrl    String?          @map("homepage_url")
+  name           String           @db.VarChar(255)
+  card           Card[]
+  platform_stats PlatformStats[]
+  socialAccount  SocialAccount[]
 
   @@map("platform")
 }
@@ -50,8 +58,12 @@ model SocialAccount {
   userId            Int      @default(autoincrement()) @map("user_id")
   platformId        Int      @default(autoincrement()) @map("platform_id")
   isActive          Boolean? @default(true) @map("is_active")
-  data              Json?    @db.Json
   platformAccountId String   @map("platform_account_id") @db.VarChar(255)
+  name              String?  @db.VarChar(255)
+  bio               String?
+  picture           String?
+  website           String?  @db.VarChar(255)
+  city              String?  @db.VarChar(255)
   platform          Platform @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   user              User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
@@ -60,10 +72,10 @@ model SocialAccount {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Technology {
-  id             Int              @id @default(autoincrement())
-  icon           String?
-  name           String           @db.VarChar(255)
-  userTechnology UserTechnology[]
+  id              Int              @id @default(autoincrement())
+  icon            String?
+  name            String           @db.VarChar(255)
+  page_technology PageTechnology[]
 
   @@map("technology")
 }
@@ -81,32 +93,45 @@ model User {
   city                     String?          @db.VarChar(255)
   pagePageInspiredByToUser Page[]           @relation("pageInspiredByToUser")
   pagePageUserIdToUser     Page[]           @relation("pageUserIdToUser")
+  platform_stats           PlatformStats[]
   socialAccount            SocialAccount[]
-  userCard                 UserCard[]
-  userTechnology           UserTechnology[]
 
   @@map("user")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model UserCard {
-  id       Int      @id @default(autoincrement())
-  userId   Int      @default(autoincrement()) @map("user_id")
-  cardId   Int      @default(autoincrement()) @map("card_id")
-  isActive Boolean? @default(true) @map("is_active")
-  card     Card     @relation(fields: [cardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user     User     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model PageCard {
+  id        Int      @id(map: "page_card_pkey") @default(autoincrement())
+  page_id   Int      @default(autoincrement())
+  card_id   Int      @default(autoincrement())
+  is_active Boolean? @default(true)
+  page      Page     @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  card      Card     @relation(fields: [card_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "page_card_card_id_fkey")
 
-  @@map("user_card")
+  @@map("page_card")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model UserTechnology {
-  id           Int        @id @default(autoincrement())
-  userId       Int        @default(autoincrement()) @map("user_id")
-  technologyId Int        @default(autoincrement()) @map("technology_id")
-  technology   Technology @relation(fields: [technologyId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  user         User       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model PageTechnology {
+  id            Int        @id @default(autoincrement())
+  page_id       Int        @default(autoincrement())
+  technology_id Int        @default(autoincrement())
+  page          Page       @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  technology    Technology @relation(fields: [technology_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "page_technology_technology_id_fkey")
 
-  @@map("user_technology")
+  @@map("page_technology")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model PlatformStats {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  platform_id Int?
+  stat_name   String?   @db.VarChar
+  stat_value  Int?
+  platform    Platform? @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("platform_stats")
 }

@@ -109,14 +109,16 @@ export default class AuthService {
             city: platformUserData.city,
             name: platformUserData.name,
             picture: platformUserData.picture,
+            website: platformUserData.website,
 
             socialAccount: {
               create: {
                 platformAccountId: String(platformUserData.userId),
-                data: {
-                  ...platformUserData,
-                  userId: String(platformUserData.userId),
-                },
+                bio: platformUserData.bio,
+                city: platformUserData.city,
+                name: platformUserData.name,
+                picture: platformUserData.picture,
+                website: platformUserData.website,
                 platform: {
                   connect: {
                     id: platformObj?.id,
@@ -125,14 +127,31 @@ export default class AuthService {
               }
             },
 
-            userCard: {
-              create: {
-                card: {
-                  connect: {
-                    id: platformObj?.card[0].id
+            platform_stats: {
+              createMany: {
+                data: [
+                  {
+                    platform_id: platformObj?.id,
+                    stat_name: 'SO_ANSWERS',
+                    stat_value: platformUserData.answers,
+                  },
+                  {
+                    platform_id: platformObj?.id,
+                    stat_name: 'SO_BADGES',
+                    stat_value: platformUserData.badges,
+                  },
+                  {
+                    platform_id: platformObj?.id,
+                    stat_name: 'SO_REPUTATION',
+                    stat_value: platformUserData.reputation,
+                  },
+                  {
+                    platform_id: platformObj?.id,
+                    stat_name: 'SO_VIEWS',
+                    stat_value: platformUserData.views,
                   }
-                },
-              }
+                ],
+              },
             },
             
             pagePageUserIdToUser: {
