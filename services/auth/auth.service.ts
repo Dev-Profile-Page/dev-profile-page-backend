@@ -113,25 +113,12 @@ export default class AuthService {
             socialAccount: {
               create: {
                 platformAccountId: String(platformUserData.userId),
-                data: {
-                  ...platformUserData,
-                  userId: String(platformUserData.userId),
-                },
+                ...platformUserData,
                 platform: {
                   connect: {
                     id: platformObj?.id,
                   }
                 }
-              }
-            },
-
-            userCard: {
-              create: {
-                card: {
-                  connect: {
-                    id: platformObj?.card[0].id
-                  }
-                },
               }
             },
             
