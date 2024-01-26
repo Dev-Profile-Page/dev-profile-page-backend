@@ -992,3 +992,30 @@ ALTER TABLE ONLY public.page_technology
 -- PostgreSQL database dump complete
 --
 
+CREATE TABLE public.platform_stats
+(
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY,
+    user_id integer NOT NULL,
+    platform_id integer,
+    stat_name character varying CHECK (stat_name IN ('SO_BADGES', 'SO_VIEWS', 'SO_ANSWERS', 'SO_REPUTATION')),
+    stat_value integer,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id)
+        REFERENCES public."user" (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID,
+    FOREIGN KEY (platform_id)
+        REFERENCES public.platform (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+        NOT VALID
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.platform_stats
+    OWNER to "devprofilepage-backend";
+
+COMMENT ON TABLE public.platform_stats
+    IS 'Used to store details like badges, answers, reputation from stackoverflow. And other stats in other platforms.';

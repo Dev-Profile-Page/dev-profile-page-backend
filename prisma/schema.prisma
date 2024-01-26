@@ -40,13 +40,14 @@ model Page {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model Platform {
-  id            Int             @id @default(autoincrement())
-  icon          String?
-  isActive      Boolean?        @default(true) @map("is_active")
-  homepageUrl   String?         @map("homepage_url")
-  name          String          @db.VarChar(255)
-  card          Card[]
-  socialAccount SocialAccount[]
+  id             Int              @id @default(autoincrement())
+  icon           String?
+  isActive       Boolean?         @default(true) @map("is_active")
+  homepageUrl    String?          @map("homepage_url")
+  name           String           @db.VarChar(255)
+  card           Card[]
+  platform_stats PlatformStats[]
+  socialAccount  SocialAccount[]
 
   @@map("platform")
 }
@@ -81,17 +82,18 @@ model Technology {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model User {
-  id                       Int             @id @default(autoincrement())
-  createdAt                DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt                DateTime?       @default(now()) @map("updated_at") @db.Timestamptz(6)
-  isActive                 Boolean?        @default(true) @map("is_active")
+  id                       Int              @id @default(autoincrement())
+  createdAt                DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  isActive                 Boolean?         @default(true) @map("is_active")
   picture                  String?
   bio                      String?
   website                  String?
-  name                     String?         @db.VarChar(255)
-  city                     String?         @db.VarChar(255)
-  pagePageInspiredByToUser Page[]          @relation("pageInspiredByToUser")
-  pagePageUserIdToUser     Page[]          @relation("pageUserIdToUser")
+  name                     String?          @db.VarChar(255)
+  city                     String?          @db.VarChar(255)
+  pagePageInspiredByToUser Page[]           @relation("pageInspiredByToUser")
+  pagePageUserIdToUser     Page[]           @relation("pageUserIdToUser")
+  platform_stats           PlatformStats[]
   socialAccount            SocialAccount[]
 
   @@map("user")
@@ -118,4 +120,18 @@ model PageTechnology {
   technology    Technology @relation(fields: [technology_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "page_technology_technology_id_fkey")
 
   @@map("page_technology")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model PlatformStats {
+  id          Int       @id @default(autoincrement())
+  user_id     Int
+  platform_id Int?
+  stat_name   String?   @db.VarChar
+  stat_value  Int?
+  platform    Platform? @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        User      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("platform_stats")
 }
